@@ -1,0 +1,341 @@
+/* Modern Dark Theme for Crypto Insights SA */
+:root {
+    --bg: #0d0f17;
+    --bg-light: #131722;
+    --text: #cfd0d3;
+    --text-light: #f0f0f0;
+    --primary: #00ff88;
+    --secondary: #00b8ff;
+    --accent: #ffa500;
+    --danger: #ff4d4d;
+    --card: #181e29;
+    --border: #2b3245;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.6;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--secondary);
+}
+
+/* Header */
+.site-header {
+    background: var(--bg-light);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.site-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+nav a {
+    color: var(--text-light);
+    margin-left: 1.5rem;
+    transition: color 0.2s;
+}
+
+nav a:hover {
+    color: var(--primary);
+}
+
+/* Hero */
+.hero {
+    background: linear-gradient(135deg, var(--bg-light) 0%, var(--border) 100%);
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.hero p {
+    color: var(--text);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn {
+    padding: 0.8rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.primary {
+    background: var(--primary);
+    color: var(--bg);
+}
+
+.secondary {
+    background: var(--border);
+    color: var(--text-light);
+}
+
+/* Ticker */
+.ticker-wrap {
+    background: var(--bg-light);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.ticker {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.ticker-item {
+    color: var(--text-light);
+}
+
+.ticker-item strong {
+    color: var(--primary);
+}
+
+/* Ad slots */
+.ad {
+    max-width: 728px;
+    margin: 1.5rem auto;
+    padding: 1rem;
+    background: var(--bg-light);
+    border: 1px dashed var(--border);
+    text-align: center;
+    color: var(--text);
+}
+
+.ad-widget {
+    min-height: 250px;
+}
+
+/* Main content grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+/* Posts */
+.post {
+    background: var(--card);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.post:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    border-color: var(--primary);
+}
+
+.post time {
+    font-size: 0.85rem;
+    color: var(--text);
+    opacity: 0.8;
+}
+
+.post h3 {
+    margin: 0.5rem 0;
+    color: var(--text-light);
+}
+
+.post a {
+    color: var(--text-light);
+}
+
+.post a:hover {
+    color: var(--primary);
+}
+
+.read-more {
+    color: var(--primary);
+    font-weight: 500;
+    margin-top: 1rem;
+    display: inline-block;
+}
+
+/* Sidebar */
+.widget {
+    background: var(--card);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.widget h3 {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.stats-list {
+    list-style: none;
+}
+
+.stats-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-light);
+}
+
+.stats-list li:last-child {
+    border-bottom: none;
+}
+
+/* Signals */
+.signal {
+    background: var(--bg-light);
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--primary);
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.signal[data-action="BUY"] {
+    border-left-color: var(--primary);
+}
+
+.signal[data-action="HOLD"] {
+    border-left-color: var(--accent);
+}
+
+.signal[data-action="SELL"] {
+    border-left-color: var(--danger);
+}
+
+.small {
+    font-size: 0.85rem;
+    color: var(--text);
+    opacity: 0.8;
+    margin-top: 0.5rem;
+}
+
+/* Articles */
+.article {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.article h1 {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.article time {
+    color: var(--text);
+    opacity: 0.8;
+}
+
+.article p {
+    margin: 1rem 0;
+    color: var(--text);
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 2rem;
+}
+
+/* Footer */
+.site-footer {
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 0;
+    text-align: center;
+    color: var(--text);
+    margin-top: 3rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ticker {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .hero {
+        padding: 2rem 1rem;
+    }
+
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .site-header .container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    nav {
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+    }
+}
