@@ -54,6 +54,14 @@ function setText(id, text) {
     }
 }
 
+function formatRefreshTime() {
+    return new Date().toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" });
+}
+
+function setRefreshLabel(id) {
+    setText(id, `Last refresh: ${formatRefreshTime()}`);
+}
+
 async function fetchJson(url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -140,8 +148,10 @@ async function updateMarketStats() {
 
         // Keep placeholder until a dedicated source is wired.
         setText("fg-index", "Source pending");
+        setRefreshLabel("stats-status");
     } catch (error) {
         console.error("Market stats error:", error);
+        setText("stats-status", "Last refresh: unavailable");
     }
 }
 
@@ -172,7 +182,7 @@ function renderNews(items) {
         return;
     }
 
-    status.textContent = `Updated ${new Date().toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" })}`;
+    status.textContent = `Last refresh: ${formatRefreshTime()}`;
     newsList.innerHTML = items.map((item) => {
         const timeText = new Date(item.publishedAt).toLocaleString("en-ZA", {
             day: "2-digit",
@@ -195,11 +205,37 @@ function renderNews(items) {
 }
 
 async function fetchFeed(feedUrl) {
-    const rss2jsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
-    const payload = await fetchJson(rss2jsonUrl);
-    const sourceTitle = payload?.feed?.title || "Crypto News";
-    const items = Array.isArray(payload?.items) ? payload.items : [];
-    return items.map((item) => normalizeNewsItem(item, sourceTitle));
+    try {
+        const rss2jsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+        const payload = await fetchJson(rss2jsonUrl);
+        const sourceTitle = payload?.feed?.title || "Crypto News";
+        const items = Array.isArray(payload?.items) ? payload.items : [];
+        if (items.length) {
+            return items.map((item) => normalizeNewsItem(item, sourceTitle));
+        }
+    } catch (error) {
+        console.warn("Primary RSS endpoint failed:", error);
+    }
+
+    const allOriginsUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
+    const xmlText = await fetch(allOriginsUrl).then((response) => {
+        if (!response.ok) {
+            throw new Error(`Fallback RSS request failed (${response.status})`);
+        }
+        return response.text();
+    });
+
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+    const sourceTitle = xmlDoc.querySelector("channel > title")?.textContent?.trim() || "Crypto News";
+    const nodes = Array.from(xmlDoc.querySelectorAll("item")).slice(0, 12);
+    return nodes.map((node) => {
+        const title = node.querySelector("title")?.textContent?.trim();
+        const link = node.querySelector("link")?.textContent?.trim();
+        const description = node.querySelector("description")?.textContent?.trim();
+        const pubDate = node.querySelector("pubDate")?.textContent?.trim();
+        return normalizeNewsItem({ title, link, description, pubDate }, sourceTitle);
+    });
 }
 
 async function updateNews() {
@@ -239,6 +275,7 @@ async function updateNews() {
         if (!cached) {
             renderNews([]);
         }
+        setText("live-news-status", "Last refresh: unavailable");
     }
 }
 
@@ -348,7 +385,7 @@ function renderSignals(signals) {
         return;
     }
 
-    status.textContent = `Updated ${new Date().toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" })}`;
+    status.textContent = `Last refresh: ${formatRefreshTime()}`;
     container.innerHTML = signals.map((signal) => `
         <div class="signal" data-action="${signal.action}">
             <div class="signal-header">
@@ -402,6 +439,7 @@ async function updateSignals() {
         if (!cached) {
             renderSignals([]);
         }
+        setText("signals-status", "Last refresh: unavailable");
     }
 }
 
