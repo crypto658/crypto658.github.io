@@ -141,6 +141,14 @@ nav a:hover {
     color: var(--primary);
 }
 
+.delta-up {
+    color: var(--primary);
+}
+
+.delta-down {
+    color: var(--danger);
+}
+
 /* Ad slots */
 .ad {
     max-width: 728px;
@@ -206,6 +214,53 @@ nav a:hover {
     display: inline-block;
 }
 
+/* Live news */
+.news-section {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.news-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.news-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+}
+
+.news-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-size: 0.8rem;
+}
+
+.source-pill {
+    border: 1px solid var(--border);
+    color: var(--secondary);
+    background: var(--bg-light);
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.75rem;
+}
+
+.news-item h3 {
+    margin: 0.35rem 0 0.4rem;
+    line-height: 1.3;
+}
+
+.news-item p {
+    color: var(--text);
+    margin: 0;
+}
+
 /* Sidebar */
 .widget {
     background: var(--card);
@@ -261,6 +316,29 @@ nav a:hover {
     border-left-color: var(--danger);
 }
 
+.signal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.signal-action {
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.signal-meta {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--text);
+}
+
+.signal-reason {
+    margin-top: 0.35rem;
+    font-size: 0.9rem;
+}
+
 .small {
     font-size: 0.85rem;
     color: var(--text);
@@ -283,6 +361,18 @@ nav a:hover {
 .article time {
     color: var(--text);
     opacity: 0.8;
+}
+
+.article-meta {
+    display: inline-block;
+    margin-top: 0.6rem;
+    margin-bottom: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    color: var(--text);
+    background: var(--bg-light);
 }
 
 .article p {
@@ -337,5 +427,9 @@ nav a:hover {
     nav {
         margin: 0.5rem 0;
         font-size: 0.9rem;
+    }
+
+    .news-meta {
+        flex-wrap: wrap;
     }
 }

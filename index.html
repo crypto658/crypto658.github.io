@@ -75,7 +75,13 @@
     <main class="container">
         <div class="content-grid">
             <section class="main-content">
-                <h2 id="news">Latest Crypto News</h2>
+                <h2 id="news">Live Crypto News</h2>
+                <div id="live-news" class="news-section" aria-live="polite">
+                    <div id="live-news-status" class="small">Loading live news…</div>
+                    <div id="live-news-list" class="news-list"></div>
+                </div>
+
+                <h2 id="analysis" style="margin-top: 2rem;">Latest Analysis</h2>
                 <article class="post">
                     <time datetime="2025-04-01">April 1, 2025</time>
                     <h3><a href="articles/bitcoin-zar-trends.html">Bitcoin ZAR: Key Trends to Watch This Month</a></h3>
@@ -117,10 +123,11 @@
             <aside class="sidebar">
                 <div class="widget signals-widget" id="signals">
                     <h3>📈 Today's Signals</h3>
-                    <div class="signal" data-asset="TRX/ZAR" data-action="BUY" data-strength="Strong">TRX/ZAR – Strong Buy (Breakout)</div>
-                    <div class="signal" data-asset="ETH/ZAR" data-action="HOLD" data-strength="Neutral">ETH/ZAR – Hold (Consolidation)</div>
-                    <div class="signal" data-asset="XRP/ZAR" data-action="SELL" data-strength="Weak">XRP/ZAR – Weak Sell (Resistance)</div>
-                    <p class="small">Signals update every 4 hours.</p>
+                    <div id="signals-status" class="small">Updating indicator-based statuses…</div>
+                    <div id="signals-list"></div>
+                    <p class="small">
+                        Signals are indicator-based statuses (RSI + trend), not financial advice. Updates every 4 hours.
+                    </p>
                 </div>
 
                 <div class="widget ad-widget">
@@ -142,11 +149,12 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; 2025 Crypto Insights SA. Not financial advice. Do your own research.</p>
+            <p>&copy; <span class="js-current-year">2025</span> Crypto Insights SA. Not financial advice. Do your own research.</p>
             <p><a href="privacy.html">Privacy Policy</a> | <a href="about.html">About</a> | Contact: <a href="mailto:info@cryptoinsights.co.za">info@cryptoinsights.co.za</a></p>
         </div>
     </footer>
 
+    <script src="site-meta.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
