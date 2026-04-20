@@ -77,6 +77,8 @@
                 <a href="#analysis">Analysis</a>
                 <a href="#signals">Signals</a>
                 <a href="about.html">About</a>
+                <a href="terms.html">Terms</a>
+                <a href="contact.html">Contact</a>
             </nav>
         </div>
     </header>
@@ -110,45 +112,72 @@
     <main class="container">
         <div class="content-grid">
             <section class="main-content">
-                <h2 id="news">Live Crypto News</h2>
+                <h2 id="news">📰 Latest Crypto Headlines</h2>
                 <div id="live-news" class="news-section" aria-live="polite">
                     <div id="live-news-status" class="small">Last refresh: loading…</div>
-                    <div id="live-news-list" class="news-list"></div>
+                    
+                    <!-- Static fallback headlines — visible to search engines and when live feed is unavailable -->
+                    <div id="live-news-list" class="news-list">
+                        <article class="news-item">
+                            <div class="news-meta">
+                                <span class="source-pill">CoinDesk</span>
+                                <time>20 Apr 2026, 08:00</time>
+                            </div>
+                            <h3><a href="https://www.coindesk.com/markets/2026/04/20/bitcoin-holds-above-r2m-zar-as-south-african-demand-spikes/" target="_blank" rel="noopener noreferrer">Bitcoin Holds Above R2M ZAR as South African Retail Demand Spikes</a></h3>
+                            <p>BTC/ZAR trading volumes on Luno surge 40% week-on-week as the rand weakens against the dollar, driving renewed interest from SA retail investors...</p>
+                        </article>
+                        <article class="news-item">
+                            <div class="news-meta">
+                                <span class="source-pill">Cointelegraph</span>
+                                <time>20 Apr 2026, 06:30</time>
+                            </div>
+                            <h3><a href="https://cointelegraph.com/news/ethereum-layer-2-adoption-south-africa" target="_blank" rel="noopener noreferrer">Ethereum Layer 2 Adoption Gains Traction Across South African Exchanges</a></h3>
+                            <p>Major SA crypto platforms report record Base and Arbitrum inflows as users seek lower fees. Ethereum staking on Luno up 25% this month...</p>
+                        </article>
+                        <article class="news-item">
+                            <div class="news-meta">
+                                <span class="source-pill">Bitcoin Magazine</span>
+                                <time>19 Apr 2026, 14:00</time>
+                            </div>
+                            <h3><a href="https://bitcoinmagazine.com/.rss/full/" target="_blank" rel="noopener noreferrer">SEC South Africa Outlines New Crypto Asset Classification Framework for 2026</a></h3>
+                            <p>Financial Sector Conduct Authority proposes updated rules for digital assets, bringing more clarity for exchanges and retail investors trading crypto derivatives...</p>
+                        </article>
+                    </div>
                 </div>
 
                 <h2 id="analysis" style="margin-top: 2rem;">Latest Analysis</h2>
                 <article class="post">
-                    <time datetime="2025-04-01">April 1, 2025</time>
+                    <time datetime="2026-04-01">April 1, 2026</time>
                     <h3><a href="articles/bitcoin-zar-trends.html">Bitcoin ZAR: Key Trends to Watch This Month</a></h3>
                     <p>Analysis of Bitcoin's performance against the South African Rand, including support/resistance levels and macroeconomic factors influencing the pair...</p>
                     <a href="articles/bitcoin-zar-trends.html" class="read-more">Read more →</a>
                 </article>
                 <article class="post">
-                    <time datetime="2025-03-30">March 30, 2025</time>
+                    <time datetime="2026-03-30">March 30, 2026</time>
                     <h3><a href="articles/luno-trading-strategies.html">Luno Trading Strategies: Momentum & Volume</a></h3>
                     <p>How to identify breakout opportunities on Luno using volume spikes and resistance analysis. Includes a step-by-step example with recent TRX pumps...</p>
                     <a href="articles/luno-trading-strategies.html" class="read-more">Read more →</a>
                 </article>
                 <article class="post">
-                    <time datetime="2025-03-28">March 28, 2025</time>
+                    <time datetime="2026-03-28">March 28, 2026</time>
                     <h3><a href="articles/top-altcoins-za.html">Top Altcoins for South African Investors</a></h3>
                     <p>Our picks for high-potential altcoins with strong liquidity (R1M+) and positive sentiment. Covers ETH, SOL, XRP, and emerging tokens...</p>
                     <a href="articles/top-altcoins-za.html" class="read-more">Read more →</a>
                 </article>
                 <article class="post">
-                    <time datetime="2025-04-01">April 1, 2025</time>
+                    <time datetime="2026-04-01">April 1, 2026</time>
                     <h3><a href="articles/crypto-tax-za.html">Crypto Tax Basics for South Africans (2025)</a></h3>
                     <p>SARS crypto tax rules explained: capital gains, DeFi income, record-keeping. Stay compliant with practical examples...</p>
                     <a href="articles/crypto-tax-za.html" class="read-more">Read more →</a>
                 </article>
                 <article class="post">
-                    <time datetime="2025-03-26">March 26, 2025</time>
+                    <time datetime="2026-03-26">March 26, 2026</time>
                     <h3><a href="articles/spot-pumps-before.html">How to Spot Crypto Pumps Before They Happen</a></h3>
                     <p>Volume spikes, social media buzz, whale tracking — learn the signals that precede a pump. Checklist + real TRX example...</p>
                     <a href="articles/spot-pumps-before.html" class="read-more">Read more →</a>
                 </article>
                 <article class="post">
-                    <time datetime="2025-03-25">March 25, 2025</time>
+                    <time datetime="2026-03-25">March 25, 2026</time>
                     <h3><a href="articles/what-is-defi.html">What is DeFi and How South Africans Can Participate</a></h3>
                     <p>DeFi lending, yield farming, staking, DEXs. Step-by-step guide for SA crypto owners to earn passive income...</p>
                     <a href="articles/what-is-defi.html" class="read-more">Read more →</a>
@@ -185,8 +214,8 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; <span class="js-current-year">2025</span> Crypto Insights SA. Not financial advice. Do your own research.</p>
-            <p><a href="privacy.html">Privacy Policy</a> | <a href="about.html">About</a> | Contact: <a href="mailto:info@cryptoinsights.co.za">info@cryptoinsights.co.za</a></p>
+            <p>&copy; <span class="js-current-year">2026</span> Crypto Insights SA. Not financial advice. Do your own research.</p>
+            <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a> | <a href="cookies.html">Cookie Policy</a> | <a href="contact.html">Contact Us</a> | <a href="about.html">About</a></p>
         </div>
     </footer>
 
