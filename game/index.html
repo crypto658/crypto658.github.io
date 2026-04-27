@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Stack Fusion</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+body {
+  background: #0a0e1a;
+  color: #e5e7eb;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+}
+#header {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #111827;
+  border-bottom: 2px solid #1f2937;
+}
+#header h1 { font-size: 1.3rem; color: #00d4ff; font-weight: 800; letter-spacing: -0.5px; }
+.stat-box { text-align: center; }
+.stat-box .val { font-size: 1.4rem; font-weight: 700; color: #00d4ff; }
+.stat-box .lbl { font-size: 0.65rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; }
+#game-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  gap: 12px;
+  width: 100%;
+  max-width: 500px;
+}
+#grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  background: #111827;
+  padding: 10px;
+  border-radius: 16px;
+  border: 2px solid #1f2937;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 360px;
+}
+.cell {
+  background: #1f2937;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s;
+  aspect-ratio: 1;
+}
+.cell:hover { background: #374151; }
+.cell.drag-over { background: #065f46; border: 2px dashed #10b981; }
+.cell.merge-flash { animation: flash 0.3s ease-out; }
+@keyframes flash {
+  0% { background: #fbbf24; transform: scale(1.1); }
+  100% { background: #1f2937; transform: scale(1); }
+}
+.shape {
+  width: 80%;
+  height: 80%;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(18px, 5vw, 28px);
+  font-weight: 900;
+  position: relative;
+  transition: transform 0.15s;
+  cursor: grab;
+}
+.shape:active { transform: scale(0.95); cursor: grabbing; }
+.shape.tier0 { background: linear-gradient(135deg, #6b7280, #4b5563); color: #d1d5db; border: 2px solid #9ca3af; }
+.shape.tier1 { background: linear-gradient(135deg, #22c55e, #16a34a); color: #bbf7d0; border: 2px solid #4ade80; }
+.shape.tier2 { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #bfdbfe; border: 2px solid #60a5fa; }
+.shape.tier3 { background: linear-gradient(135deg, #a855f7, #7e22ce); color: #e9d5ff; border: 2px solid #c084fc; }
+.shape.tier4 { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fef3c7; border: 2px solid #fbbf24; }
+.shape.tired { animation: tired-pulse 1s infinite; opacity: 0.7; }
+@keyframes tired-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.92); opacity: 0.5; }
+}
+.tier-label { font-size: clamp(8px, 2vw, 11px); font-weight: 800; }
+#queue-area {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  background: #111827;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 2px solid #1f2937;
+  width: 100%;
+  max-width: 360px;
+}
+#queue-label { font-size: 0.7rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; writing-mode: vertical-rl; }
+#queue-shapes { display: flex; gap: 8px; flex: 1; justify-content: center; }
+.queue-shape {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 900;
+  cursor: grab;
+  border: 2px solid transparent;
+  transition: transform 0.15s, border-color 0.15s;
+}
+.queue-shape:hover { transform: scale(1.08); }
+.queue-shape.selected { border-color: #00d4ff; transform: scale(1.12); box-shadow: 0 0 12px #00d4ff55; }
+.queue-shape.tier0 { background: linear-gradient(135deg, #6b7280, #4b5563); color: #d1d5db; border-color: #9ca3af; }
+.queue-shape.tier1 { background: linear-gradient(135deg, #22c55e, #16a34a); color: #bbf7d0; border-color: #4ade80; }
+.queue-shape.tier2 { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #bfdbfe; border-color: #60a5fa; }
+.queue-shape.tier3 { background: linear-gradient(135deg, #a855f7, #7e22ce); color: #e9d5ff; border-color: #c084fc; }
+.queue-shape.tier4 { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fef3c7; border-color: #fbbf24; }
+#drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+#combo-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: 900;
+  color: #fbbf24;
+  text-shadow: 0 0 20px #f59e0b;
+  pointer-events: none;
+  z-index: 500;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+#combo-popup.show { opacity: 1; animation: combo-pop 0.6s ease-out; }
+@keyframes combo-pop {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  30% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+  100% { transform: translate(-50%, -60%) scale(1); opacity: 0; }
+}
+#timer-bar {
+  width: 100%;
+  max-width: 360px;
+  height: 6px;
+  background: #1f2937;
+  border-radius: 3px;
+  overflow: hidden;
+}
+#timer-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+  border-radius: 3px;
+  transition: width 0.3s linear;
+}
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,14,26,0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  gap: 16px;
+  padding: 20px;
+}
+#overlay.hidden { display: none; }
+#overlay h2 { font-size: 2rem; color: #00d4ff; margin-bottom: 8px; }
+#overlay .final-score { font-size: 3rem; font-weight: 800; color: #fbbf24; }
+#overlay .sub { color: #9ca3af; font-size: 0.9rem; margin-bottom: 12px; }
+.btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: #00d4ff; color: #000; }
+.btn-secondary { background: #1f2937; color: #e5e7eb; border: 2px solid #374151; }
+#mode-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.mode-btn {
+  padding: 8px 16px;
+  border: 2px solid #374151;
+  border-radius: 8px;
+  background: #1f2937;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mode-btn.active { border-color: #00d4ff; color: #00d4ff; background: #0a1628; }
+#tired-info {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  text-align: center;
+  max-width: 300px;
+  line-height: 1.4;
+}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div class="stat-box">
+    <div class="val" id="score-val">0</div>
+    <div class="lbl">Score</div>
+  </div>
+  <h1>STACK FUSION</h1>
+  <div class="stat-box">
+    <div class="val" id="time-val">60</div>
+    <div class="lbl">Time</div>
+  </div>
+</div>
+
+<div id="game-area">
+  <div id="timer-bar"><div id="timer-fill" style="width:100%"></div></div>
+  <div id="grid"></div>
+  <div id="queue-area">
+    <div id="queue-label">NEXT</div>
+    <div id="queue-shapes"></div>
+  </div>
+</div>
+
+<div id="drag-ghost"></div>
+<div id="combo-popup"></div>
+
+<div id="overlay">
+  <h2>STACK FUSION</h2>
+  <div id="mode-toggle">
+    <button class="mode-btn active" data-mode="relaxed">Relaxed</button>
+    <button class="mode-btn" data-mode="time">Time Attack</button>
+  </div>
+  <p id="tired-info">Drag shapes to the grid. Match 3 adjacent shapes to merge them into the next tier. Watch out for tired shapes — they'll disappear!</p>
+  <button class="btn btn-primary" id="start-btn">PLAY</button>
+</div>
+
+<script>
+// ============ CONFIGURATION ============
+const GRID_SIZE = 5;
+const NUM_SHAPE_TYPES = 5; // Cube, Sphere, Pyramid, Cylinder, Star
+const SHAPE_SYMBOLS = ['⬛', '⚫', '🔺', '🔘', '⭐'];
+const SHAPE_NAMES = ['Cube', 'Sphere', 'Pyramid', 'Cylinder', 'Star'];
+const TIRED_LIFETIME = 12000; // ms until a tired shape despawns
+const SCORE_PER_MERGE = [0, 10, 30, 90, 270, 810]; // points per tier merge result
+const GAME_TIME_RELAXED = 0; // 0 = no timer
+const GAME_TIME_ATTACK = 60;
+
+// ============ GAME STATE ============
+let grid = []; // 5x5 array of {type, tier, tired, tiredTimer} or null
+let queue = []; // array of {type, tier}
+let selectedQueueIndex = 0;
+let score = 0;
+let gameActive = false;
+let gameMode = 'relaxed';
+let timeLeft = GAME_TIME_ATTACK;
+let timerInterval = null;
+let tiredInterval = null;
+let highScore = parseInt(localStorage.getItem('stackfusion_high') || '0');
+
+// ============ DOM REFS ============
+const gridEl = document.getElementById('grid');
+const queueEl = document.getElementById('queue-shapes');
+const scoreEl = document.getElementById('score-val');
+const timeEl = document.getElementById('time-val');
+const timerFill = document.getElementById('timer-fill');
+const overlay = document.getElementById('overlay');
+const comboPopup = document.getElementById('combo-popup');
+const dragGhost = document.getElementById('drag-ghost');
+const startBtn = document.getElementById('start-btn');
+
+// ============ INITIALIZATION ============
+function init() {
+  buildGridDOM();
+  setupEventListeners();
+  setupDragAndDrop();
+}
+
+function buildGridDOM() {
+  gridEl.innerHTML = '';
+  for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.index = i;
+    gridEl.appendChild(cell);
+  }
+}
+
+function setupEventListeners() {
+  startBtn.addEventListener('click', startGame);
+  
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      gameMode = btn.dataset.mode;
+      document.getElementById('tired-info').textContent =
+        gameMode === 'time'
+          ? 'Time Attack! Merge fast to score and refill time. Tired shapes appear more often!'
+          : 'Drag shapes to the grid. Match 3 adjacent shapes to merge them into the next tier. Watch out for tired shapes — they\'ll disappear!';
+    });
+  });
+}
+
+// ============ DRAG AND DROP ============
+let dragState = null;
+
+function setupDragAndDrop() {
+  // Mouse events
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+  // Touch events
+  document.addEventListener('touchmove', onTouchMove, { passive: false });
+  document.addEventListener('touchend', onTouchEnd);
+}
+
+function onTouchMove(e) {
+  if (!dragState) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  positionGhost(touch.clientX, touch.clientY);
+  updateDragOverCell(touch.clientX, touch.clientY);
+}
+
+function onTouchEnd(e) {
+  if (!dragState) return;
+  const touch = e.changedTouches[0];
+  dropOnCell(touch.clientX, touch.clientY);
+  endDrag();
+}
+
+function onMouseMove(e) {
+  if (!dragState) return;
+  positionGhost(e.clientX, e.clientY);
+  updateDragOverCell(e.clientX, e.clientY);
+}
+
+function onMouseUp(e) {
+  if (!dragState) return;
+  dropOnCell(e.clientX, e.clientY);
+  endDrag();
+}
+
+function positionGhost(x, y) {
+  dragGhost.style.display = 'flex';
+  dragGhost.style.left = x + 'px';
+  dragGhost.style.top = y + 'px';
+}
+
+function updateDragOverCell(x, y) {
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach(c => c.classList.remove('drag-over'));
+  
+  const el = document.elementFromPoint(x, y);
+  if (el && el.classList.contains('cell') && el.dataset.index !== undefined) {
+    const idx = parseInt(el.dataset.index);
+    if (grid[idx] === null) {
+      el.classList.add('drag-over');
+    }
+  }
+}
+
+function endDrag() {
+  dragState = null;
+  dragGhost.style.display = 'none';
+  document.querySelectorAll('.cell').forEach(c => c.classList.remove('drag-over'));
+  document.querySelectorAll('.queue-shape').forEach(s => s.classList.remove('selected'));
+}
+
+function dropOnCell(x, y) {
+  const el = document.elementFromPoint(x, y);
+  if (!el || !el.classList.contains('cell')) return;
+  
+  const idx = parseInt(el.dataset.index);
+  if (grid[idx] !== null) return; // cell occupied
+  
+  placeShape(idx);
+}
+
+// ============ QUEUE SHAPE DRAGGING ============
+function makeQueueDraggable(shapeEl, qIdx) {
+  const onStart = (e) => {
+    e.preventDefault();
+    dragState = { type: 'queue', index: qIdx };
+    const shape = queue[qIdx];
+    selectedQueueIndex = qIdx;
+    
+    // Highlight selected
+    document.querySelectorAll('.queue-shape').forEach(s => s.classList.remove('selected'));
+    shapeEl.classList.add('selected');
+    
+    // Show ghost
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const s = queue[qIdx];
+    dragGhost.className = `queue-shape tier${s.tier}`;
+    dragGhost.textContent = SHAPE_SYMBOLS[s.type];
+    positionGhost(clientX, clientY);
+  };
+  
+  shapeEl.addEventListener('mousedown', onStart);
+  shapeEl.addEventListener('touchstart', onStart, { passive: false });
+}
+
+// ============ GAME FLOW ============
+function startGame() {
+  score = 0;
+  timeLeft = gameMode === 'time' ? GAME_TIME_ATTACK : 0;
+  gameActive = true;
+  
+  // Reset grid
+  grid = new Array(GRID_SIZE * GRID_SIZE).fill(null);
+  renderGrid();
+  
+  // Build initial queue
+  queue = [];
+  for (let i = 0; i < 3; i++) queue.push(generateQueueShape());
+  renderQueue();
+  
+  // Update UI
+  updateScore();
+  overlay.classList.add('hidden');
+  
+  // Start timers
+  if (tiredInterval) clearInterval(tiredInterval);
+  tiredInterval = setInterval(updateTiredShapes, 500);
+  
+  if (gameMode === 'time') {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerDisplay();
+      if (timeLeft <= 0) endGame();
+    }, 1000);
+  } else {
+    // Relaxed mode: no countdown, show idle
+    timeLeft = 0;
+    updateTimerDisplay();
+  }
+}
+
+function endGame() {
+  gameActive = false;
+  clearInterval(timerInterval);
+  clearInterval(tiredInterval);
+  
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem('stackfusion_high', highScore);
+  }
+  
+  showOverlay(`GAME OVER`, score, highScore);
+}
+
+function showOverlay(title, finalScore, best) {
+  overlay.classList.remove('hidden');
+  overlay.querySelector('h2').textContent = title;
+  
+  const existingFinal = document.querySelector('.final-score');
+  if (existingFinal) existingFinal.remove();
+  const existingSub = document.querySelector('.sub');
+  if (existingSub) existingSub.remove();
+  
+  const fs = document.createElement('div');
+  fs.className = 'final-score';
+  fs.textContent = finalScore.toLocaleString();
+  overlay.insertBefore(fs, startBtn);
+  
+  const sub = document.createElement('div');
+  sub.className = 'sub';
+  sub.textContent = `Best: ${best.toLocaleString()}`;
+  overlay.insertBefore(sub, startBtn);
+}
+
+// ============ SHAPE GENERATION ============
+function generateQueueShape() {
+  const type = Math.floor(Math.random() * NUM_SHAPE_TYPES);
+  const tier = Math.random() < 0.7 ? 0 : (Math.random() < 0.7 ? 1 : 2);
+  return { type, tier, tired: false };
+}
+
+function generateTiredShape() {
+  const s = generateQueueShape();
+  s.tired = true;
+  s.tiredTimer = Date.now() + TIRED_LIFETIME;
+  return s;
+}
+
+// ============ PLACING SHAPES ============
+function placeShape(cellIndex) {
+  if (!gameActive) return;
+  
+  const shape = queue[selectedQueueIndex];
+  if (!shape) return;
+  
+  grid[cellIndex] = { ...shape, tiredTimer: shape.tired ? (Date.now() + TIRED_LIFETIME) : null };
+  
+  // Remove from queue and refill
+  queue.splice(selectedQueueIndex, 1);
+  while (queue.length < 3) queue.push(generateQueueShape());
+  
+  renderGrid();
+  renderQueue();
+  
+  // Check merges
+  setTimeout(() => checkAndProcessMerges(cellIndex), 100);
+}
+
+function renderGrid() {
+  const cells = gridEl.querySelectorAll('.cell');
+  cells.forEach((cell, idx) => {
+    const shape = grid[idx];
+    cell.innerHTML = '';
+    cell.className = 'cell';
+    
+    if (shape) {
+      const el = makeShapeEl(shape);
+      cell.appendChild(el);
+      if (shape.tired) el.classList.add('tired');
+    }
+  });
+}
+
+function renderQueue() {
+  queueEl.innerHTML = '';
+  queue.forEach((shape, idx) => {
+    const el = document.createElement('div');
+    el.className = `queue-shape tier${shape.tier}`;
+    if (shape.tired) el.style.animation = 'tired-pulse 1s infinite';
+    el.textContent = SHAPE_SYMBOLS[shape.type];
+    
+    // Tier label
+    const lbl = document.createElement('div');
+    lbl.className = 'tier-label';
+    lbl.style.fontSize = '9px';
+    lbl.style.opacity = 0.7;
+    lbl.textContent = `T${shape.tier}`;
+    el.style.flexDirection = 'column';
+    el.style.fontSize = '16px';
+    el.appendChild(lbl);
+    
+    makeQueueDraggable(el, idx);
+    queueEl.appendChild(el);
+  });
+}
+
+function makeShapeEl(shape) {
+  const el = document.createElement('div');
+  el.className = `shape tier${Math.min(shape.tier, 4)}`;
+  el.textContent = SHAPE_SYMBOLS[shape.type];
+  
+  const lbl = document.createElement('div');
+  lbl.className = 'tier-label';
+  lbl.textContent = `T${shape.tier}`;
+  el.style.flexDirection = 'column';
+  el.style.fontSize = '10px';
+  el.appendChild(lbl);
+  
+  return el;
+}
+
+// ============ MERGING ============
+function getNeighbors(idx) {
+  const neighbors = [];
+  const row = Math.floor(idx / GRID_SIZE);
+  const col = idx % GRID_SIZE;
+  
+  if (col > 0) neighbors.push(idx - 1);
+  if (col < GRID_SIZE - 1) neighbors.push(idx + 1);
+  if (row > 0) neighbors.push(idx - GRID_SIZE);
+  if (row < GRID_SIZE - 1) neighbors.push(idx + GRID_SIZE);
+  
+  return neighbors;
+}
+
+function checkAndProcessMerges(initialIdx) {
+  if (!gameActive) return;
+  
+  let merged = false;
+  const toRemove = new Set();
+  const toAdd = {};
+  
+  // BFS/flood fill to find connected same-type+same-tier groups
+  const visited = new Set();
+  const queue2 = [initialIdx];
+  
+  while (queue2.length > 0) {
+    const idx = queue2.pop();
+    if (visited.has(idx)) continue;
+    visited.add(idx);
+    
+    const shape = grid[idx];
+    if (!shape) continue;
+    
+    // Find all connected shapes of same type AND tier
+    const group = [];
+    const groupQueue = [idx];
+    const groupVisited = new Set([idx]);
+    
+    while (groupQueue.length > 0) {
+      const gidx = groupQueue.pop();
+      const gshape = grid[gidx];
+      if (!gshape || gshape.type !== shape.type || gshape.tier !== shape.tier) continue;
+      group.push(gidx);
+      
+      for (const n of getNeighbors(gidx)) {
+        if (!groupVisited.has(n)) {
+          groupVisited.add(n);
+          groupQueue.push(n);
+        }
+      }
+    }
+    
+    // If 3 or more, mark for merge
+    if (group.length >= 3) {
+      merged = true;
+      const resultTier = Math.min(shape.tier + 1, 4);
+      
+      // Score
+      const pts = SCORE_PER_MERGE[resultTier] * group.length;
+      score += pts;
+      updateScore();
+      showCombo(pts);
+      
+      // Find centroid as merge target
+      const sumRow = group.reduce((s, i) => s + Math.floor(i / GRID_SIZE), 0);
+      const sumCol = group.reduce((s, i) => s + (i % GRID_SIZE), 0);
+      const centroidIdx = Math.round(sumRow / group.length) * GRID_SIZE + Math.round(sumCol / group.length);
+      
+      // Mark all for removal
+      group.forEach(i => toRemove.add(i));
+      
+      // Place merged shape at centroid (or first if centroid occupied)
+      let targetIdx = centroidIdx;
+      if (toRemove.has(targetIdx) || grid[targetIdx] !== null) {
+        targetIdx = group[0];
+      }
+      toAdd[targetIdx] = { type: shape.type, tier: resultTier, tired: false };
+    }
+  }
+  
+  if (!merged) return;
+  
+  // Animate
+  toRemove.forEach(idx => {
+    const cell = gridEl.children[idx];
+    cell.classList.add('merge-flash');
+  });
+  
+  setTimeout(() => {
+    if (!gameActive) return;
+    
+    toRemove.forEach(idx => { grid[idx] = null; });
+    for (const [idx, shape] of Object.entries(toAdd)) {
+      grid[parseInt(idx)] = shape;
+    }
+    
+    renderGrid();
+    updateScore();
+    
+    // Chain reaction
+    setTimeout(() => checkAndProcessMerges(Object.keys(toAdd)[0]), 200);
+  }, 300);
+}
+
+// ============ TIRED SHAPES ============
+function updateTiredShapes() {
+  if (!gameActive) return;
+  const now = Date.now();
+  let changed = false;
+  
+  grid.forEach((shape, idx) => {
+    if (shape && shape.tired && now >= shape.tiredTimer) {
+      grid[idx] = null;
+      changed = true;
+    }
+  });
+  
+  // Occasionally add a tired shape to queue
+  if (Math.random() < 0.02 && gameActive) {
+    queue[0] = generateTiredShape();
+    changed = true;
+  }
+  
+  if (changed) {
+    renderGrid();
+    renderQueue();
+  }
+}
+
+// ============ UI UPDATES ============
+function updateScore() {
+  scoreEl.textContent = score.toLocaleString();
+}
+
+function updateTimerDisplay() {
+  if (gameMode === 'relaxed') {
+    timeEl.textContent = '∞';
+    timerFill.style.width = '100%';
+  } else {
+    timeEl.textContent = timeLeft;
+    timerFill.style.width = ((timeLeft / GAME_TIME_ATTACK) * 100) + '%';
+  }
+}
+
+function showCombo(pts) {
+  comboPopup.textContent = `+${pts}`;
+  comboPopup.classList.remove('show');
+  void comboPopup.offsetWidth; // reflow
+  comboPopup.classList.add('show');
+}
+
+// ============ START ============
+init();
+</script>
+</body>
+</html>
