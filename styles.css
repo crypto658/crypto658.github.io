@@ -433,3 +433,50 @@ nav a:hover {
         flex-wrap: wrap;
     }
 }
+
+/* ─── Calculator ─────────────────────────────────────────────────── */
+.coin-selector { margin-bottom: 0.5rem; }
+.coin-btn { cursor: pointer; transition: all 0.2s; }
+.coin-btn.active { background: #e67e22; color: white; border-color: #e67e22; }
+
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+.calc-field label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+.calc-field input {
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+.calc-field input:focus { outline: none; border-color: #e67e22; }
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+.result-card {
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.result-card.highlight { background: #fff3e0; }
+.result-label { font-size: 0.8rem; color: #666; }
+.result-value { font-size: 1.1rem; font-weight: 700; }
+.result-card.profit .result-value { color: #27ae60; }
+.result-card.loss .result-value { color: #e74c3c; }

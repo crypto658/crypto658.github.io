@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JS1VV3GRG6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JS1VV3GRG6');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Profit Calculator ZAR – Crypto Insights SA</title>
+    <meta name="description" content="Calculate your cryptocurrency profit or loss in South African Rands (ZAR). Supports Bitcoin, Ethereum, and major altcoins with Luno price data.">
+    <meta name="keywords" content="crypto profit calculator, BTC ZAR, crypto tax calculator South Africa, cryptocurrency gains ZAR, Luno profit calculator">
+    <link rel="canonical" href="https://crypto658.github.io/calculator.html">
+    <link rel="stylesheet" href="styles.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8582580290922225" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-8582580290922225">
+    <meta property="og:title" content="Crypto Profit Calculator ZAR – Crypto Insights SA">
+    <meta property="og:description" content="Calculate your crypto profit or loss in South African Rands with live Luno prices.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://crypto658.github.io/calculator.html">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Crypto Profit Calculator ZAR",
+      "description": "Calculate cryptocurrency profit or loss in South African Rands using live Luno prices.",
+      "url": "https://crypto658.github.io/calculator.html",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web Browser",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ZAR" },
+      "publisher": { "@type": "Organization", "name": "Crypto Insights SA", "url": "https://crypto658.github.io/" }
+    }
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="/" class="logo">🚀 Crypto Insights SA</a>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/articles">Articles</a>
+                <a href="/calculator.html">Calculator</a>
+                <a href="/about.html">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" style="padding: 2rem 0;">
+        <div class="container">
+            <h1>Crypto Profit Calculator</h1>
+            <p>Calculate your profit or loss in South African Rands. Uses live Luno prices.</p>
+        </div>
+    </section>
+
+    <main class="container" style="padding: 2rem 0;">
+        <div class="content-grid" style="grid-template-columns: 1fr;">
+            <section class="main-content">
+
+                <!-- Coin Selector -->
+                <div class="widget" style="margin-bottom: 1.5rem;">
+                    <h3>Select Cryptocurrency</h3>
+                    <div class="coin-selector" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <button class="btn secondary coin-btn active" data-coin="BTC" data-name="Bitcoin">₿ Bitcoin</button>
+                        <button class="btn secondary coin-btn" data-coin="ETH" data-name="Ethereum">Ξ Ethereum</button>
+                        <button class="btn secondary coin-btn" data-coin="SOL" data-name="Solana">◎ Solana</button>
+                        <button class="btn secondary coin-btn" data-coin="XRP" data-name="XRP">✕ XRP</button>
+                        <button class="btn secondary coin-btn" data-coin="CUSTOM" data-name="Custom">⚙ Custom</button>
+                    </div>
+                    <div id="custom-coin-row" style="display: none; margin-top: 0.5rem;">
+                        <label for="custom-coin-name" style="display: block; margin-bottom: 0.25rem; font-size: 0.9rem;">Coin name:</label>
+                        <input type="text" id="custom-coin-name" placeholder="e.g. DOGE" style="padding: 0.4rem; width: 120px;">
+                        <label for="custom-price" style="display: inline-block; margin-left: 1rem; margin-bottom: 0.25rem; font-size: 0.9rem;">Current price (ZAR):</label>
+                        <input type="number" id="custom-price" placeholder="e.g. 3.20" style="padding: 0.4rem; width: 140px;">
+                    </div>
+                    <p id="price-display" class="small" style="margin-top: 0.5rem;">
+                        Live ZAR price: <strong id="current-price">Loading...</strong>
+                        <span id="price-source" style="color: #888;"></span>
+                    </p>
+                </div>
+
+                <!-- Calculator Form -->
+                <div class="widget" style="margin-bottom: 1.5rem;">
+                    <h3>Trade Details</h3>
+                    <div class="calc-grid">
+                        <div class="calc-field">
+                            <label for="buy-price">Buy Price (ZAR per coin) *</label>
+                            <input type="number" id="buy-price" placeholder="e.g. 1800000" min="0" step="any">
+                        </div>
+                        <div class="calc-field">
+                            <label for="sell-price">Sell Price (ZAR per coin) *</label>
+                            <input type="number" id="sell-price" placeholder="e.g. 2100000" min="0" step="any">
+                        </div>
+                        <div class="calc-field">
+                            <label for="quantity">Quantity (coins owned) *</label>
+                            <input type="number" id="quantity" placeholder="e.g. 0.5" min="0" step="any">
+                        </div>
+                        <div class="calc-field">
+                            <label for="fee-percent">Luno Fee (%)</label>
+                            <input type="number" id="fee-percent" value="0.19" min="0" max="5" step="0.01">
+                        </div>
+                    </div>
+                    <p class="small" style="color: #888; margin-top: 0.5rem;">* Required fields. Luno maker/taker fee is 0.19% for ZAR trades.</p>
+                </div>
+
+                <!-- Results -->
+                <div class="widget results-widget" id="results" style="display: none;">
+                    <h3>📊 Results</h3>
+                    <div class="results-grid">
+                        <div class="result-card profit">
+                            <span class="result-label">Total Investment (ZAR)</span>
+                            <span class="result-value" id="total-investment">--</span>
+                        </div>
+                        <div class="result-card profit">
+                            <span class="result-label">Gross Value at Sell (ZAR)</span>
+                            <span class="result-value" id="gross-value">--</span>
+                        </div>
+                        <div class="result-card profit">
+                            <span class="result-label">Total Fees (ZAR)</span>
+                            <span class="result-value" id="total-fees">--</span>
+                        </div>
+                        <div class="result-card highlight">
+                            <span class="result-label">Net Profit / Loss (ZAR)</span>
+                            <span class="result-value" id="net-profit">--</span>
+                        </div>
+                        <div class="result-card highlight">
+                            <span class="result-label">Return on Investment</span>
+                            <span class="result-value" id="roi">--</span>
+                        </div>
+                        <div class="result-card">
+                            <span class="result-label">Breakeven Price (ZAR)</span>
+                            <span class="result-value" id="breakeven">--</span>
+                        </div>
+                    </div>
+                    <p id="tax-note" class="small" style="margin-top: 1rem; background: #f8f8f8; padding: 0.75rem; border-radius: 6px;">
+                        <strong>SA Tax Note:</strong> Cryptocurrencies are not CGT assets in South Africa. Profits may be treated as <strong>ordinary income</strong> under the Eighth Schedule to the Income Tax Act. Keep records of all disposals. Consult a tax practitioner.
+                    </p>
+                </div>
+
+                <button class="btn primary" id="calc-btn" onclick="calculate()" style="margin-bottom: 1rem;">Calculate Profit / Loss</button>
+                <button class="btn secondary" id="reset-btn" onclick="resetCalc()" style="margin-bottom: 1rem; margin-left: 0.5rem;">Reset</button>
+
+                <!-- DCA Calculator -->
+                <div class="widget" style="margin-top: 2rem;">
+                    <h3>📅 DCA (Dollar-Cost Averaging) Calculator</h3>
+                    <p style="font-size: 0.95rem; margin-bottom: 1rem;">See what your monthly Bitcoin purchases would be worth today.</p>
+                    <div class="calc-grid">
+                        <div class="calc-field">
+                            <label for="dca-monthly">Monthly Amount (ZAR)</label>
+                            <input type="number" id="dca-monthly" placeholder="e.g. 2000" min="100" value="1000">
+                        </div>
+                        <div class="calc-field">
+                            <label for="dca-months">Number of Months</label>
+                            <input type="number" id="dca-months" placeholder="e.g. 12" min="1" max="120" value="12">
+                        </div>
+                        <div class="calc-field">
+                            <label for="dca-start-price">Starting Price (ZAR/BTC)</label>
+                            <input type="number" id="dca-start-price" placeholder="e.g. 800000" min="0" value="800000">
+                        </div>
+                        <div class="calc-field">
+                            <label for="dca-current-price">Current Price (ZAR/BTC)</label>
+                            <input type="number" id="dca-current-price" placeholder="e.g. 2000000" min="0" id="dca-current-price">
+                        </div>
+                    </div>
+                    <button class="btn primary" onclick="calculateDCA()" style="margin-top: 0.75rem;">Calculate DCA Returns</button>
+                    <div id="dca-results" style="display: none; margin-top: 1rem;">
+                        <div class="results-grid">
+                            <div class="result-card">
+                                <span class="result-label">Total Invested (ZAR)</span>
+                                <span class="result-value" id="dca-invested">--</span>
+                            </div>
+                            <div class="result-card">
+                                <span class="result-label">Total BTC Accumulated</span>
+                                <span class="result-value" id="dca-btc">--</span>
+                            </div>
+                            <div class="result-card">
+                                <span class="result-label">Current Value (ZAR)</span>
+                                <span class="result-value" id="dca-value">--</span>
+                            </div>
+                            <div class="result-card highlight">
+                                <span class="result-label">Total Profit / Loss (ZAR)</span>
+                                <span class="result-value" id="dca-profit">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; <span class="js-current-year">2026</span> Crypto Insights SA. Not financial advice. Do your own research.</p>
+            <p><a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a> | <a href="cookies.html">Cookies</a> | <a href="contact.html">Contact</a> | <a href="about.html">About</a></p>
+        </div>
+    </footer>
+
+    <script src="site-meta.js"></script>
+    <script>
+    // ─── Live Price Fetching ────────────────────────────────────────
+    let currentCoin = 'BTC';
+    let livePrice = null;
+
+    const coinPrices = {
+        BTC: { name: 'Bitcoin',    symbol: 'BTC-XYZ' },
+        ETH: { name: 'Ethereum',   symbol: 'ETH-XYZ' },
+        SOL: { name: 'Solana',     symbol: 'SOL-XYZ' },
+        XRP: { name: 'XRP',        symbol: 'XRP-XYZ' }
+    };
+
+    async function fetchLunoPrice(pair) {
+        try {
+            const res = await fetch('https://api.cryptocompare.com/data/pricemulti?fsyms=' + pair + '&tsyms=ZAR');
+            const data = await res.json();
+            if (data[pair] && data[pair].ZAR) return data[pair].ZAR;
+        } catch (e) {}
+        // fallback try direct Luno API
+        try {
+            const res = await fetch('https://api.luno.com/api/v1/ticker?pair=XBTZAR');
+            const j = await res.json();
+            if (j.last_trade) return parseFloat(j.last_trade);
+        } catch (e) {}
+        return null;
+    }
+
+    async function fetchPriceForCoin(coin) {
+        const pairs = { BTC: 'XBT', ETH: 'ETH', SOL: 'SOL', XRP: 'XRP' };
+        const pair = pairs[coin];
+        if (!pair) return null;
+        try {
+            const res = await fetch(`https://api.luno.com/api/v1/ticker?pair=${pair}ZAR`);
+            const j = await res.json();
+            if (j.last_trade) return parseFloat(j.last_trade);
+        } catch (e) {}
+        // fallback: CryptoCompare
+        try {
+            const res = await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${pair}&tsyms=ZAR`);
+            const data = await res.json();
+            if (data.ZAR) return data.ZAR;
+        } catch (e) {}
+        return null;
+    }
+
+    async function updateLivePrice() {
+        if (currentCoin === 'CUSTOM') return;
+        const priceEl = document.getElementById('current-price');
+        const sourceEl = document.getElementById('price-source');
+        priceEl.textContent = 'Fetching...';
+        const price = await fetchPriceForCoin(currentCoin);
+        if (price) {
+            livePrice = price;
+            priceEl.textContent = 'R ' + price.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            sourceEl.textContent = ' (live Luno)';
+            // auto-fill sell price with live price
+            document.getElementById('sell-price').value = price.toFixed(2);
+        } else {
+            priceEl.textContent = 'Unavailable';
+            sourceEl.textContent = '';
+        }
+    }
+
+    // Coin selector
+    document.querySelectorAll('.coin-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.coin-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCoin = btn.dataset.coin;
+            const customRow = document.getElementById('custom-coin-row');
+            if (currentCoin === 'CUSTOM') {
+                customRow.style.display = 'block';
+                document.getElementById('current-price').textContent = 'Set below';
+                document.getElementById('price-source').textContent = '';
+                livePrice = null;
+            } else {
+                customRow.style.display = 'none';
+                updateLivePrice();
+            }
+        });
+    });
+
+    // ─── Main Calculator ────────────────────────────────────────────
+    function calculate() {
+        const buyPrice  = parseFloat(document.getElementById('buy-price').value);
+        const sellPrice = parseFloat(document.getElementById('sell-price').value);
+        const qty       = parseFloat(document.getElementById('quantity').value);
+        const feePct    = parseFloat(document.getElementById('fee-percent').value) || 0.19;
+
+        if (!buyPrice || !sellPrice || !qty) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+
+        const investment  = buyPrice * qty;
+        const grossValue = sellPrice * qty;
+        // Fees on both buy and sell
+        const buyFee  = investment * (feePct / 100);
+        const sellFee = grossValue * (feePct / 100);
+        const totalFees = buyFee + sellFee;
+        const netProfit = grossValue - investment - totalFees;
+        const roi = ((netProfit / investment) * 100).toFixed(2);
+        const breakeven = (buyPrice * (1 + (feePct * 2) / 100)).toFixed(2);
+
+        document.getElementById('total-investment').textContent = 'R ' + investment.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('gross-value').textContent = 'R ' + grossValue.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('total-fees').textContent = 'R ' + totalFees.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        
+        const profitEl = document.getElementById('net-profit');
+        profitEl.textContent = (netProfit >= 0 ? '+' : '') + 'R ' + netProfit.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        profitEl.style.color = netProfit >= 0 ? '#27ae60' : '#e74c3c';
+
+        const roiEl = document.getElementById('roi');
+        roiEl.textContent = (roi >= 0 ? '+' : '') + roi + '%';
+        roiEl.style.color = roi >= 0 ? '#27ae60' : '#e74c3c';
+
+        document.getElementById('breakeven').textContent = 'R ' + parseFloat(breakeven).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('results').style.display = 'block';
+    }
+
+    function resetCalc() {
+        ['buy-price','sell-price','quantity'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('results').style.display = 'none';
+    }
+
+    // ─── DCA Calculator ─────────────────────────────────────────────
+    function calculateDCA() {
+        const monthly   = parseFloat(document.getElementById('dca-monthly').value) || 0;
+        const months    = parseInt(document.getElementById('dca-months').value) || 0;
+        const startPrice = parseFloat(document.getElementById('dca-start-price').value) || 0;
+        const currentP  = parseFloat(document.getElementById('dca-current-price').value) || 0;
+
+        if (!monthly || !months || !startPrice || !currentP) {
+            alert('Please fill in all DCA fields.');
+            return;
+        }
+
+        // Average price = starting price (simplified model — no price history)
+        // Real DCA would need monthly prices; we assume steady appreciation from start to current
+        const avgBuyPrice = startPrice; // simplified
+        const totalInvested = monthly * months;
+        const totalBTC = months * (monthly / avgBuyPrice);
+        const currentValue = totalBTC * currentP;
+        const profit = currentValue - totalInvested;
+        const roiPct = ((profit / totalInvested) * 100).toFixed(2);
+
+        document.getElementById('dca-invested').textContent = 'R ' + totalInvested.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('dca-btc').textContent = totalBTC.toFixed(8) + ' BTC';
+        document.getElementById('dca-value').textContent = 'R ' + currentValue.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const profitEl = document.getElementById('dca-profit');
+        profitEl.textContent = (profit >= 0 ? '+' : '') + 'R ' + profit.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        profitEl.style.color = profit >= 0 ? '#27ae60' : '#e74c3c';
+        document.getElementById('dca-results').style.display = 'block';
+    }
+
+    // Init
+    updateLivePrice();
+    setInterval(updateLivePrice, 60000); // refresh every minute
+    </script>
+</body>
+</html>
