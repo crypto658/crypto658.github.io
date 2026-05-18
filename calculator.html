@@ -42,10 +42,11 @@
         <div class="container">
             <a href="/" class="logo">🚀 Crypto Insights SA</a>
             <nav>
-                <a href="/">Home</a>
-                <a href="/articles">Articles</a>
-                <a href="/calculator.html">Calculator</a>
-                <a href="/about.html">About</a>
+                <a href="index.html">Home</a>
+                <a href="index.html#guides">Articles</a>
+                <a href="calculator.html">Calculator</a>
+                <a href="about.html">About</a>
+                <a href="editorial-policy.html">Editorial Policy</a>
             </nav>
         </div>
     </header>
@@ -53,7 +54,7 @@
     <section class="hero" style="padding: 2rem 0;">
         <div class="container">
             <h1>Crypto Profit Calculator</h1>
-            <p>Calculate your profit or loss in South African Rands. Uses live Luno prices.</p>
+            <p>Estimate profit or loss in South African Rands using current market pricing. This tool is for general educational use and should be double-checked before making financial or tax decisions.</p>
         </div>
     </section>
 
@@ -78,7 +79,7 @@
                         <input type="number" id="custom-price" placeholder="e.g. 3.20" style="padding: 0.4rem; width: 140px;">
                     </div>
                     <p id="price-display" class="small" style="margin-top: 0.5rem;">
-                        Live ZAR price: <strong id="current-price">Loading...</strong>
+                        Live ZAR price: <strong id="current-price">Fetching latest price…</strong>
                         <span id="price-source" style="color: #888;"></span>
                     </p>
                 </div>
@@ -104,7 +105,7 @@
                             <input type="number" id="fee-percent" value="0.19" min="0" max="5" step="0.01">
                         </div>
                     </div>
-                    <p class="small" style="color: #888; margin-top: 0.5rem;">* Required fields. Luno maker/taker fee is 0.19% for ZAR trades.</p>
+                    <p class="small" style="color: #888; margin-top: 0.5rem;">* Required fields. Fees, spreads, and execution costs vary by platform and account tier. Adjust inputs to match your own trade rather than relying on a default estimate.</p>
                 </div>
 
                 <!-- Results -->
@@ -137,7 +138,7 @@
                         </div>
                     </div>
                     <p id="tax-note" class="small" style="margin-top: 1rem; background: #f8f8f8; padding: 0.75rem; border-radius: 6px;">
-                        <strong>SA Tax Note:</strong> Cryptocurrencies are not CGT assets in South Africa. Profits may be treated as <strong>ordinary income</strong> under the Eighth Schedule to the Income Tax Act. Keep records of all disposals. Consult a tax practitioner.
+                        <strong>SA Tax Note:</strong> Crypto tax treatment in South Africa depends on your facts, records, and whether SARS treats the activity as capital or revenue in nature. This calculator is not a tax calculator and does not replace advice from a qualified practitioner.
                     </p>
                 </div>
 
@@ -147,7 +148,7 @@
                 <!-- DCA Calculator -->
                 <div class="widget" style="margin-top: 2rem;">
                     <h3>📅 DCA (Dollar-Cost Averaging) Calculator</h3>
-                    <p style="font-size: 0.95rem; margin-bottom: 1rem;">See what your monthly Bitcoin purchases would be worth today.</p>
+                    <p style="font-size: 0.95rem; margin-bottom: 1rem;">See what steady monthly Bitcoin purchases could look like over time. This is a simple educational illustration, not a forecast.</p>
                     <div class="calc-grid">
                         <div class="calc-field">
                             <label for="dca-monthly">Monthly Amount (ZAR)</label>
@@ -195,7 +196,7 @@
     <footer class="site-footer">
         <div class="container">
             <p>&copy; <span class="js-current-year">2026</span> Crypto Insights SA. Not financial advice. Do your own research.</p>
-            <p><a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a> | <a href="cookies.html">Cookies</a> | <a href="contact.html">Contact</a> | <a href="about.html">About</a></p>
+            <p><a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a> | <a href="cookies.html">Cookies</a> | <a href="about.html">About</a> | <a href="authors.html">Authors</a> | <a href="editorial-policy.html">Editorial Policy</a> | <a href="contact.html">Contact</a></p>
         </div>
     </footer>
 
